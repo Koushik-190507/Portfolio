@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Koushik Polisetti — Portfolio</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0a0a0a;
+    --surface: #111111;
+    --border: #222222;
+    --accent: #c8ff00;
+    --accent2: #ff6b35;
+    --text: #f0f0f0;
+    --muted: #666;
+    --font-display: 'Syne', sans-serif;
+    --font-mono: 'DM Mono', monospace;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-display);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── NOISE OVERLAY ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.35;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.4rem 3rem;
+    border-bottom: 1px solid var(--border);
+    background: rgba(10,10,10,0.85);
+    backdrop-filter: blur(12px);
+  }
+
+  .nav-logo {
+    font-size: 1rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: var(--accent);
+    font-family: var(--font-mono);
+  }
+
+  .nav-links { display: flex; gap: 2.5rem; }
+
+  .nav-links a {
+    font-size: 0.8rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--text); }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 8rem 3rem 4rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-bg-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -52%);
+    font-size: clamp(10rem, 22vw, 22rem);
+    font-weight: 800;
+    color: transparent;
+    -webkit-text-stroke: 1px #1a1a1a;
+    white-space: nowrap;
+    pointer-events: none;
+    user-select: none;
+    letter-spacing: -0.05em;
+    animation: driftUp 1.2s ease forwards;
+    opacity: 0;
+  }
+
+  @keyframes driftUp {
+    from { opacity: 0; transform: translate(-50%, -48%); }
+    to   { opacity: 1; transform: translate(-50%, -52%); }
+  }
+
+  .hero-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--accent);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 1.2rem;
+    animation: fadeIn 0.8s 0.3s ease forwards;
+    opacity: 0;
+  }
+
+  .hero-name {
+    font-size: clamp(3.5rem, 9vw, 9rem);
+    font-weight: 800;
+    line-height: 0.92;
+    letter-spacing: -0.04em;
+    animation: fadeIn 0.8s 0.5s ease forwards;
+    opacity: 0;
+  }
+
+  .hero-name span { color: var(--accent); }
+
+  .hero-sub {
+    margin-top: 2rem;
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    color: var(--muted);
+    max-width: 480px;
+    line-height: 1.7;
+    animation: fadeIn 0.8s 0.7s ease forwards;
+    opacity: 0;
+  }
+
+  .hero-cta {
+    margin-top: 3rem;
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    animation: fadeIn 0.8s 0.9s ease forwards;
+    opacity: 0;
+  }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.85rem 2rem;
+    font-family: var(--font-display);
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: #000;
+  }
+  .btn-primary:hover { background: #d4ff1a; transform: translateY(-2px); }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--text);
+    border: 1px solid var(--border);
+  }
+  .btn-ghost:hover { border-color: var(--text); }
+
+  .scroll-indicator {
+    position: absolute;
+    bottom: 2.5rem;
+    right: 3rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    animation: fadeIn 0.8s 1.2s ease forwards;
+    opacity: 0;
+  }
+
+  .scroll-line {
+    width: 48px;
+    height: 1px;
+    background: var(--muted);
+    animation: expandLine 1s 1.5s ease forwards;
+    transform-origin: left;
+    transform: scaleX(0);
+  }
+
+  @keyframes expandLine {
+    to { transform: scaleX(1); }
+  }
+
+  @keyframes fadeIn {
+    to { opacity: 1; }
+  }
+
+  /* ── SECTIONS COMMON ── */
+  section {
+    padding: 6rem 3rem;
+    border-top: 1px solid var(--border);
+  }
+
+  .section-label {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--accent);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 3rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+    max-width: 120px;
+  }
+
+  .section-title {
+    font-size: clamp(2rem, 5vw, 4.5rem);
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    line-height: 1;
+    margin-bottom: 1rem;
+  }
+
+  /* ── ABOUT ── */
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6rem;
+    align-items: start;
+  }
+
+  .about-text {
+    font-family: var(--font-mono);
+    font-size: 0.95rem;
+    line-height: 1.85;
+    color: #aaa;
+  }
+
+  .about-text p + p { margin-top: 1.2rem; }
+
+  .about-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+  }
+
+  .stat {
+    background: var(--bg);
+    padding: 2rem;
+    transition: background 0.2s;
+  }
+  .stat:hover { background: var(--surface); }
+
+  .stat-number {
+    font-size: 3rem;
+    font-weight: 800;
+    color: var(--accent);
+    line-height: 1;
+    letter-spacing: -0.04em;
+  }
+
+  .stat-label {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-top: 0.5rem;
+  }
+
+  /* ── SKILLS ── */
+  .skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+  }
+
+  .skill-card {
+    background: var(--bg);
+    padding: 2.5rem;
+    position: relative;
+    overflow: hidden;
+    transition: background 0.2s;
+    cursor: default;
+  }
+
+  .skill-card:hover { background: var(--surface); }
+
+  .skill-card::before {
+    content: attr(data-num);
+    position: absolute;
+    top: 1rem;
+    right: 1.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    color: var(--border);
+    letter-spacing: 0.1em;
+  }
+
+  .skill-icon {
+    font-size: 2rem;
+    margin-bottom: 1.2rem;
+  }
+
+  .skill-name {
+    font-size: 1.1rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    margin-bottom: 0.5rem;
+  }
+
+  .skill-desc {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  .skill-bar {
+    margin-top: 1.5rem;
+    height: 2px;
+    background: var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .skill-bar-fill {
+    position: absolute;
+    top: 0; left: 0;
+    height: 100%;
+    background: var(--accent);
+    transition: width 1s ease;
+  }
+
+  /* ── PROJECTS ── */
+  .projects-list { display: flex; flex-direction: column; gap: 1px; background: var(--border); border: 1px solid var(--border); }
+
+  .project-item {
+    background: var(--bg);
+    padding: 2.5rem 3rem;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 3rem;
+    align-items: center;
+    transition: background 0.2s;
+    cursor: pointer;
+  }
+  .project-item:hover { background: var(--surface); }
+  .project-item:hover .project-arrow { transform: translateX(4px); }
+
+  .project-num {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    min-width: 2rem;
+  }
+
+  .project-info {}
+
+  .project-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .tag {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.25rem 0.6rem;
+    border: 1px solid var(--border);
+    color: var(--muted);
+  }
+
+  .tag.accent { border-color: var(--accent); color: var(--accent); }
+
+  .project-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.4rem;
+  }
+
+  .project-desc {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--muted);
+  }
+
+  .project-arrow {
+    font-size: 1.5rem;
+    color: var(--muted);
+    transition: transform 0.2s, color 0.2s;
+  }
+  .project-item:hover .project-arrow { color: var(--accent); }
+
+  /* ── EDUCATION ── */
+  .edu-timeline { position: relative; padding-left: 2rem; }
+
+  .edu-timeline::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.6rem;
+    bottom: 0;
+    width: 1px;
+    background: var(--border);
+  }
+
+  .edu-item {
+    position: relative;
+    padding: 0 0 3.5rem 2.5rem;
+  }
+
+  .edu-item::before {
+    content: '';
+    position: absolute;
+    left: -2rem;
+    top: 0.55rem;
+    width: 9px;
+    height: 9px;
+    background: var(--accent);
+    transform: rotate(45deg);
+  }
+
+  .edu-period {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--accent);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+
+  .edu-degree {
+    font-size: 1.4rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.3rem;
+  }
+
+  .edu-school {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    color: var(--muted);
+  }
+
+  /* ── CERT ── */
+  .cert-card {
+    display: inline-flex;
+    align-items: center;
+    gap: 1.2rem;
+    border: 1px solid var(--border);
+    padding: 1.5rem 2rem;
+    margin-top: 2rem;
+    transition: border-color 0.2s;
+  }
+  .cert-card:hover { border-color: var(--accent); }
+
+  .cert-icon { font-size: 2rem; }
+
+  .cert-name {
+    font-size: 0.9rem;
+    font-weight: 700;
+  }
+
+  .cert-issuer {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--muted);
+    margin-top: 0.2rem;
+    letter-spacing: 0.05em;
+  }
+
+  /* ── CONTACT ── */
+  .contact-wrapper {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6rem;
+    align-items: center;
+  }
+
+  .contact-headline {
+    font-size: clamp(2.5rem, 6vw, 5.5rem);
+    font-weight: 800;
+    letter-spacing: -0.04em;
+    line-height: 0.95;
+  }
+
+  .contact-headline .accent { color: var(--accent); display: block; }
+
+  .contact-links { display: flex; flex-direction: column; gap: 1.5rem; }
+
+  .contact-link {
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+    text-decoration: none;
+    color: var(--text);
+    padding: 1.5rem 2rem;
+    border: 1px solid var(--border);
+    transition: all 0.2s;
+    group: true;
+  }
+  .contact-link:hover { border-color: var(--accent); background: var(--surface); }
+  .contact-link:hover .contact-link-icon { color: var(--accent); }
+
+  .contact-link-icon { font-size: 1.3rem; transition: color 0.2s; }
+
+  .contact-link-text {}
+  .contact-link-label {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    color: var(--muted);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 0.2rem;
+  }
+  .contact-link-value { font-size: 0.9rem; font-weight: 600; }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 2rem 3rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  footer p {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+  }
+
+  .footer-accent { color: var(--accent); }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 768px) {
+    nav { padding: 1rem 1.5rem; }
+    .nav-links { gap: 1.5rem; }
+    .hero { padding: 7rem 1.5rem 3rem; }
+    section { padding: 4rem 1.5rem; }
+    .about-grid, .contact-wrapper { grid-template-columns: 1fr; gap: 3rem; }
+    .project-item { grid-template-columns: auto 1fr; }
+    .project-arrow { display: none; }
+    footer { padding: 1.5rem; flex-direction: column; gap: 0.5rem; text-align: center; }
+    .hero-bg-text { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">Koushik</div>
+  <div class="nav-links">
+    <a href="#about">About</a>
+    <a href="#skills">Skills</a>
+    <a href="#projects">Projects</a>
+    <a href="#education">Education</a>
+    <a href="#contact">Contact</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-bg-text"></div>
+  <div class="hero-eyebrow">✦ AI & ML Engineer · Freelancer · Problem Solver</div>
+  <h1 class="hero-name">Koushik<br><span>Polisetti</span></h1>
+  <p class="hero-sub">Building intelligent solutions at the intersection of code and creativity. Currently pursuing B.Tech in AI & ML at Sanskriti University.</p>
+  <div class="hero-cta">
+    <a href="#projects" class="btn btn-primary">View Work →</a>
+    <a href="#contact" class="btn btn-ghost">Get in Touch</a>
+  </div>
+  <div class="scroll-indicator">
+    <div class="scroll-line"></div>
+    Scroll to explore
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="section-label">01 — About</div>
+  <div class="about-grid">
+    <div>
+      <h2 class="section-title">Passionate<br>coder &<br>builder.</h2>
+    </div>
+    <div>
+      <div class="about-text">
+        <p>Hello! I'm Koushik — a B.Tech student specializing in Artificial Intelligence and Machine Learning at Sanskriti University, Mathura.</p>
+        <p>I take on freelance projects alongside my studies to gain real-world, hands-on experience. I genuinely enjoy coding, solving complex problems, and crafting innovative solutions that make a difference.</p>
+        <p>I'm constantly learning, improving, and looking for opportunities to grow by working on meaningful projects. Quality work, delivered on time — that's my promise.</p>
+      </div>
+      <div class="about-stats" style="margin-top: 3rem;">
+        <div class="stat">
+          <div class="stat-number">2028</div>
+          <div class="stat-label">Expected Graduation</div>
+        </div>
+        <div class="stat">
+          <div class="stat-number">AIML</div>
+          <div class="stat-label">Specialization</div>
+        </div>
+        <div class="stat">
+          <div class="stat-number">1+</div>
+          <div class="stat-label">Projects Completed</div>
+        </div>
+        <div class="stat">
+          <div class="stat-number">∞</div>
+          <div class="stat-label">Curiosity Level</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="section-label">02 — Skills</div>
+  <h2 class="section-title" style="margin-bottom: 3rem;">What I<br>work with.</h2>
+  <div class="skills-grid">
+    <div class="skill-card" data-num="01">
+      <div class="skill-icon">⚛️</div>
+      <div class="skill-name">React.js</div>
+      <div class="skill-desc">Building modern, component-driven UIs with hooks, state management, and responsive design.</div>
+      <div class="skill-bar"><div class="skill-bar-fill" style="width: 80%"></div></div>
+    </div>
+    <div class="skill-card" data-num="02">
+      <div class="skill-icon">🖥️</div>
+      <div class="skill-name">Operating Systems</div>
+      <div class="skill-desc">Deep understanding of OS concepts: processes, memory management, scheduling & file systems.</div>
+      <div class="skill-bar"><div class="skill-bar-fill" style="width: 75%"></div></div>
+    </div>
+    <div class="skill-card" data-num="03">
+      <div class="skill-icon">🗄️</div>
+      <div class="skill-name">Database Management</div>
+      <div class="skill-desc">Designing and querying relational databases, normalization, and data modeling.</div>
+      <div class="skill-bar"><div class="skill-bar-fill" style="width: 70%"></div></div>
+    </div>
+    <div class="skill-card" data-num="04">
+      <div class="skill-icon">🤖</div>
+      <div class="skill-name">AI / ML</div>
+      <div class="skill-desc">Studying and applying machine learning algorithms, neural networks, and data analytics.</div>
+      <div class="skill-bar"><div class="skill-bar-fill" style="width: 65%"></div></div>
+    </div>
+    <div class="skill-card" data-num="05">
+      <div class="skill-icon">📊</div>
+      <div class="skill-name">Data Analytics</div>
+      <div class="skill-desc">Analyzing and visualizing data to extract meaningful insights — certified by Deloitte Australia.</div>
+      <div class="skill-bar"><div class="skill-bar-fill" style="width: 72%"></div></div>
+    </div>
+    <div class="skill-card" data-num="06">
+      <div class="skill-icon">🔧</div>
+      <div class="skill-name">Problem Solving</div>
+      <div class="skill-desc">Approaching complex challenges methodically and delivering quality solutions on time.</div>
+      <div class="skill-bar"><div class="skill-bar-fill" style="width: 90%"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="section-label">03 — Projects</div>
+  <h2 class="section-title" style="margin-bottom: 3rem;">Selected<br>work.</h2>
+  <div class="projects-list">
+    <div class="project-item">
+      <div class="project-num">01</div>
+      <div class="project-info">
+        <div class="project-tags">
+          <span class="tag accent">React.js</span>
+          <span class="tag">Frontend</span>
+          <span class="tag">Freelance</span>
+        </div>
+        <div class="project-title">Web Application (Freelance)</div>
+        <div class="project-desc">A client-facing web app built with React.js, focusing on clean UX and responsive design.</div>
+      </div>
+      <div class="project-arrow">→</div>
+    </div>
+    <div class="project-item">
+      <div class="project-num">02</div>
+      <div class="project-info">
+        <div class="project-tags">
+          <span class="tag accent">Data Analytics</span>
+          <span class="tag">Deloitte Simulation</span>
+        </div>
+        <div class="project-title">Data Analytics Simulation</div>
+        <div class="project-desc">Completed Deloitte Australia's job simulation — performed real-world data analysis and visualization tasks.</div>
+      </div>
+      <div class="project-arrow">→</div>
+    </div>
+    <div class="project-item">
+      <div class="project-num">03</div>
+      <div class="project-info">
+        <div class="project-tags">
+          <span class="tag accent">AI / ML</span>
+          <span class="tag">Academic</span>
+        </div>
+        <div class="project-title">AI & ML Research Projects</div>
+        <div class="project-desc">Ongoing academic projects in artificial intelligence and machine learning at Sanskriti University.</div>
+      </div>
+      <div class="project-arrow">→</div>
+    </div>
+  </div>
+  <p style="font-family: var(--font-mono); font-size: 0.75rem; color: var(--muted); margin-top: 2rem; letter-spacing: 0.05em;">
+    * More projects coming soon. Currently building in stealth. 👀
+  </p>
+</section>
+
+<!-- EDUCATION -->
+<section id="education">
+  <div class="section-label">04 — Education</div>
+  <h2 class="section-title" style="margin-bottom: 3.5rem;">Academic<br>journey.</h2>
+
+  <div class="edu-timeline">
+    <div class="edu-item">
+      <div class="edu-period">Aug 2024 — Jun 2028</div>
+      <div class="edu-degree">B.Tech in Computer Science Engineering</div>
+      <div class="edu-school">Sanskriti University, Mathura · AI & ML Specialization</div>
+    </div>
+    <div class="edu-item">
+      <div class="edu-period">Jul 2022 — Mar 2024</div>
+      <div class="edu-degree">Intermediate Education</div>
+      <div class="edu-school">Sri Chaitanya College of Education</div>
+    </div>
+    <div class="edu-item" style="padding-bottom: 0;">
+      <div class="edu-period">Jun 2021 — Apr 2022</div>
+      <div class="edu-degree">Secondary School</div>
+      <div class="edu-school">Sri Chaitanya Techno School</div>
+    </div>
+  </div>
+
+  <!-- Certification -->
+  <div style="margin-top: 4rem;">
+    <div class="section-label" style="margin-bottom: 1.5rem;">Certifications</div>
+    <div class="cert-card">
+      <div class="cert-icon">🏆</div>
+      <div>
+        <div class="cert-name">Data Analytics Job Simulation</div>
+        <div class="cert-issuer">Deloitte Australia · 2024</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="section-label">05 — Contact</div>
+  <div class="contact-wrapper">
+    <div>
+      <h2 class="contact-headline">Let's build<br>something<br><span class="accent">great.</span></h2>
+      <p style="font-family: var(--font-mono); font-size: 0.85rem; color: var(--muted); margin-top: 2rem; line-height: 1.8; max-width: 360px;">
+        Open to freelance projects, collaborations, and exciting opportunities. Reach out and let's talk.
+      </p>
+    </div>
+    <div class="contact-links">
+      <a href="tel:+919133043724" class="contact-link">
+        <span class="contact-link-icon">📞</span>
+        <div class="contact-link-text">
+          <div class="contact-link-label">Phone</div>
+          <div class="contact-link-value">+91 91330 43724</div>
+        </div>
+      </a>
+      <a href="mailto:koushik.190507@gmail.com" class="contact-link">
+        <span class="contact-link-icon">✉️</span>
+        <div class="contact-link-text">
+          <div class="contact-link-label">Email</div>
+          <div class="contact-link-value">koushik.190507@gmail.com</div>
+        </div>
+      </a>
+      <a href="https://www.linkedin.com/in/koushik-polisetti-492408324/" target="_blank" class="contact-link">
+        <span class="contact-link-icon">💼</span>
+        <div class="contact-link-text">
+          <div class="contact-link-label">LinkedIn</div>
+          <div class="contact-link-value">koushikpolisetti-492408324</div>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <p>© 2025 <span class="footer-accent">Koushik Polisetti</span>. All rights reserved.</p>
+  <p>Designed & built with ❤️ · Mathura, India</p>
+</footer>
+
+<script>
+  // Intersection Observer for skill bars
+  const bars = document.querySelectorAll('.skill-bar-fill');
+  const widths = [];
+  bars.forEach(b => {
+    widths.push(b.style.width);
+    b.style.width = '0%';
+  });
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const idx = [...bars].indexOf(entry.target);
+        entry.target.style.width = widths[idx];
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.5 });
+
+  bars.forEach(b => observer.observe(b));
+</script>
+</body>
+</html>
